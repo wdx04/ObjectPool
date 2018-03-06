@@ -35,6 +35,12 @@ class ObjectPool
     pool_.push(std::move(t));
   }
 
+  std::unique_ptr<T> remove() {
+	  std::unique_ptr<T> ptr;
+	  while (!pool_.try_pop(ptr)) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	  return ptr;
+  }
+
   ptr_type acquire() {
 	std::unique_ptr<T> ptr;
 	while (!pool_.try_pop(ptr)) std::this_thread::sleep_for(std::chrono::milliseconds(1));
